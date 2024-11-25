@@ -21,7 +21,10 @@ async def get_all_users():
 @app.post("/user/{username}/{age}")
 async def create_user(username: str = Path(min_length=5, max_length=20, description="Enter username")
                       , age: int = Path(ge=18, le=120, description="Enter age")) -> User:
-    next_id = len(users) + 1
+     if not users:
+        next_id = 1
+    else:
+        next_id = max(user.id for user in users) + 1
     new_user = User(id=next_id, username=username, age=age)
     users.append(new_user)
     return new_user
